@@ -1,6 +1,9 @@
-import { supabase } from '@/lib/supabase'
+import { createSupabaseServerClient } from '@/lib/supabase-server'
+import LogoutButton from './logout-button'
 
 export default async function ClientesPage() {
+  const supabase = await createSupabaseServerClient()
+
   const { data: clientes, error } = await supabase
     .from('clientes')
     .select('*')
@@ -12,7 +15,10 @@ export default async function ClientesPage() {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Clientes de YAX</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Clientes de YAX</h1>
+        <LogoutButton />
+      </div>
       <ul className="space-y-4">
         {clientes.map((cliente) => (
           <li key={cliente.id} className="border p-4 rounded-lg">
