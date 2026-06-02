@@ -32,7 +32,10 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login')
-  const isProtectedPage = request.nextUrl.pathname.startsWith('/clientes')
+  const isProtectedPage =
+    request.nextUrl.pathname.startsWith('/clientes') ||
+    request.nextUrl.pathname.startsWith('/productos')
+
 
   // Sin sesión intentando entrar a ruta protegida → manda a login
   if (!user && isProtectedPage) {

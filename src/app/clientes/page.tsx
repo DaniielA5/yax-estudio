@@ -28,17 +28,21 @@ export default async function ClientesPage() {
       <div className="max-w-4xl mx-auto p-6 md:p-8">
         {/* Header */}
         <header className="flex justify-between items-center mb-8 pb-6 border-b border-gray-800">
-          <div>
-            <h1 className="text-3xl font-bold">Clientes</h1>
-            <p className="text-gray-400 text-sm mt-1">
-              {clientes.length} {clientes.length === 1 ? 'cliente registrado' : 'clientes registrados'}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <ClienteForm />
-            <LogoutButton />
-          </div>
-        </header>
+  <div>
+    <h1 className="text-3xl font-bold">Clientes</h1>
+    <p className="text-gray-400 text-sm mt-1">
+      {clientes.length} {clientes.length === 1 ? 'cliente registrado' : 'clientes registrados'}
+    </p>
+  </div>
+  <div className="flex items-center gap-4">
+    <nav className="flex gap-1 text-sm">
+      <a href="/clientes" className="px-3 py-1.5 bg-gray-800 text-white rounded-lg">Clientes</a>
+      <a href="/productos" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Productos</a>
+    </nav>
+    <ClienteForm />
+    <LogoutButton />
+  </div>
+</header>
 
         {/* Lista o estado vacío */}
         {clientes.length === 0 ? (
