@@ -34,7 +34,11 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login')
   const isProtectedPage =
     request.nextUrl.pathname.startsWith('/clientes') ||
-    request.nextUrl.pathname.startsWith('/productos')
+    request.nextUrl.pathname.startsWith('/productos') ||
+    request.nextUrl.pathname.startsWith('/tecnicas') ||
+    request.nextUrl.pathname.startsWith('/cotizaciones')
+
+
 
 
   // Sin sesión intentando entrar a ruta protegida → manda a login

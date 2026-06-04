@@ -42,6 +42,9 @@ export default async function ProductosPage() {
     <nav className="flex gap-1 text-sm">
       <a href="/clientes" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Clientes</a>
       <a href="/productos" className="px-3 py-1.5 bg-gray-800 text-white rounded-lg">Productos</a>
+      <a href="/tecnicas" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Técnicas</a>
+      <a href="/cotizaciones/nueva" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Nueva cotización</a>
+      
     </nav>
     <ProductoForm />
   </div>
@@ -65,7 +68,7 @@ function EstadoVacio() {
   return (
     <div className="text-center py-16 border-2 border-dashed border-gray-800 rounded-xl">
       <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-900 flex items-center justify-center text-3xl">
-        👕
+        
       </div>
       <h2 className="text-xl font-semibold mb-2">Aún no tienes productos</h2>
       <p className="text-gray-400 text-sm">
