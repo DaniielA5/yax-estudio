@@ -1,6 +1,10 @@
 'use client'
 
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
+import { crearCotizacion } from "../actions"
+
+
 
 type Cliente = {
     id: number
@@ -51,7 +55,9 @@ export default function CotizacionForm({ clientes, productos, tecnicas }: Props)
   const [clienteId, setClienteId] = useState<number | null>(null)
   const [items, setItems] = useState<ItemCotizacion[]>([{ ...ITEM_VACIO }])
   const [notas, setNotas] = useState('')
-
+  const router = useRouter()
+  const [guardando, setGuardando] = useState(false)
+  const [errorGuardar, setErrorGuardar] = useState('')
 
     function agregarItem(){
         setItems([...items, { ...ITEM_VACIO}])
@@ -186,16 +192,46 @@ const itemsIncompletos =items.some((item) => !item.producto_id || !item.tecnica_
         {hayErrores && (
           <p className="text-sm text-red-400 mb-3">Revisa los errores de mínimo de piezas</p>
         )}
+        {errorGuardar && (
+          <p className="text-sm text-red-400 mb-3">{errorGuardar}</p>
+        )}
 
         <button
           type="button"
           disabled={!clienteId || itemsIncompletos || hayErrores}
           className="w-full p-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          onClick={() => {
-            // Mañana lo conectamos al backend
-            console.log({ clienteId, items: itemsConPrecio, total, notas })
-            alert('Mañana implementamos el guardado. Por ahora revisa la consola del navegador (F12)')
-          }}
+          
+          onClick={async () => {
+  if (!clienteId) return
+  setGuardando(true)
+  setErrorGuardar('')
+
+  const itemsParaGuardar = itemsConPrecio.map((item) => ({
+    producto_id: item.producto_id,
+    tecnica_id: item.tecnica_id,
+    cantidad: item.cantidad,
+    talla: item.talla,
+    color: item.color,
+    precio_unitario: item.precio_unitario,
+    subtotal: item.subtotal,
+  }))
+
+  const result = await crearCotizacion({
+    cliente_id: clienteId,
+    items: itemsParaGuardar,
+    total,
+    notas,
+  })
+
+  setGuardando(false)
+
+  if (result.error) {
+    setErrorGuardar(result.error)
+    return
+  }
+
+  router.push('/cotizaciones')
+}}
         >
           Guardar cotización
         </button>
