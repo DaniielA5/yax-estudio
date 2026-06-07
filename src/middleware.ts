@@ -27,26 +27,29 @@ export async function middleware(request: NextRequest) {
     }
   )
 
+  const path = request.nextUrl.pathname
+
+  // Rutas públicas (no requieren login)
+  const isPublicCotizacion = path.startsWith('/c/')
+  if (isPublicCotizacion) {
+    return response
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login')
+  const isAuthPage = path.startsWith('/login')
   const isProtectedPage =
-    request.nextUrl.pathname.startsWith('/clientes') ||
-    request.nextUrl.pathname.startsWith('/productos') ||
-    request.nextUrl.pathname.startsWith('/tecnicas') ||
-    request.nextUrl.pathname.startsWith('/cotizaciones')
+    path.startsWith('/clientes') ||
+    path.startsWith('/productos') ||
+    path.startsWith('/tecnicas') ||
+    path.startsWith('/cotizaciones')
 
-
-
-
-  // Sin sesión intentando entrar a ruta protegida → manda a login
   if (!user && isProtectedPage) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Con sesión intentando entrar a login → manda a clientes
   if (user && isAuthPage) {
     return NextResponse.redirect(new URL('/clientes', request.url))
   }

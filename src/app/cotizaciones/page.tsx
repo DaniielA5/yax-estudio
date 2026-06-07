@@ -1,5 +1,8 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import CambiarEstadoButton from './cambiar-estado-button'
+import CompartirButton from './compartir-button'
+
+
 
 const ESTADOS = {
   cotizado: { label: 'Cotizado', color: 'bg-gray-800 text-gray-300' },
@@ -85,6 +88,7 @@ export default async function CotizacionesPage() {
                         <span className={`text-xs px-2 py-0.5 rounded-full ${estado.color}`}>
                           {estado.label}
                         </span>
+                        <code className="text-xs text-gray-600 font-mono">/{cot.slug}</code>
                       </div>
                       <h3 className="font-semibold text-lg">
                         {cot.clientes?.nombre || 'Sin cliente'}
@@ -103,7 +107,12 @@ export default async function CotizacionesPage() {
                       <p className="text-2xl font-bold text-orange-400">
                         ${Number(cot.total).toFixed(2)}
                       </p>
-                      <div className="mt-2">
+                      <div className="mt-2 flex flex-col gap-1 items-end">
+                        <CompartirButton
+                          slug={cot.slug}
+                          clienteNombre={cot.clientes?.nombre || 'cliente'}
+                          total={Number(cot.total)}
+                        />
                         <CambiarEstadoButton
                           cotizacionId={cot.id}
                           estadoActual={cot.estado}
