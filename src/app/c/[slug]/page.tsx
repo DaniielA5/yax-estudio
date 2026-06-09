@@ -27,7 +27,7 @@ export default async function CotizacionPublicaPaga({
         clientes (nombre, empresa),
         items_cotizacion (
             *,
-            productos (nombre, material), 
+            productos (nombre, material, imagen_url), 
             tecnicas_impresion (nombre, notas)
         )
     `)
@@ -115,6 +115,14 @@ export default async function CotizacionPublicaPaga({
                 className="bg-gray-900 border border-gray-800 rounded-xl p-5"
               >
                 <div className="flex justify-between items-start gap-4 mb-3">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  {item.productos?.imagen_url && (
+                    <img
+                      src={item.productos.imagen_url}
+                      alt={item.productos.nombre}
+                      className="w-16 h-16 rounded-lg object-cover border border-gray-800 flex-shrink-0"
+                    />
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold">
                       {item.productos?.nombre}
@@ -124,12 +132,13 @@ export default async function CotizacionPublicaPaga({
                       {item.productos?.material && ` · ${item.productos.material}`}
                     </p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="font-semibold">
-                      ${Number(item.subtotal).toFixed(2)}
-                    </p>
-                  </div>
                 </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="font-semibold">
+                    ${Number(item.subtotal).toFixed(2)}
+                  </p>
+                </div>
+              </div>
 
                 <div className="flex gap-3 text-xs text-gray-500">
                   <span>Cant: {item.cantidad}</span>

@@ -81,3 +81,73 @@ export async function toggleActivoProducto(id: number, activoActual: boolean) {
   return { success: true }
 }
 
+export async function subirImagenProducto(productoId: number, formData: FormData) {
+  const supabase = await createSupabaseServerClient()
+
+  const archivo = formData.get('imagen') as File
+  if (!archivo || archivo.size === 0) {
+    return { error: 'Selecciona una imagen' }
+  }
+
+  if (!archivo.type.startsWith('image/')) {
+    return { error: 'El archivo debe ser una imagen' }
+  }
+
+  if (archivo.size > 5 * 1024 * 1024) {
+    return { error: 'La imagen no puede pesar más de 5 MB' }
+  }
+  const extension = archivo.name.split('.').pop()
+  const nombreArchivo = `${productoId}_${Date.now()}.${extension}`
+
+  const { error: errorUpload } = await supabase.storage
+    .from('productos')
+    .upload(nombreArchivo, archivo, {
+      cacheControl: '3600',
+      upsert: false,
+    })
+
+  if (errorUpload) {
+    return { error: errorUpload.message }
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('productos')
+    .getPublicUrl(nombreArchivo)
+
+  const { error: errorUpdate } = await supabase
+    .from('productos')
+    .update({ imagen_url: urlData.publicUrl })
+    .eq('id', productoId)
+
+  if (errorUpdate) return { error: errorUpdate.message }
+
+  revalidatePath('/productos')
+  return { success: true }
+}
+
+export async function eliminarImagenProducto(productoId: number) {
+  const supabase = await createSupabaseServerClient()
+
+  const { data: producto } = await supabase
+    .from('productos')
+    .select('imagen_url')
+    .eq('id', productoId)
+    .single()
+
+  if (producto?.imagen_url) {
+    const nombreArchivo = producto.imagen_url.split('/').pop()
+    if (nombreArchivo) {
+      await supabase.storage.from('productos').remove([nombreArchivo])
+    }
+  }
+
+  const { error } = await supabase
+    .from('productos')
+    .update({ imagen_url: null })
+    .eq('id', productoId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/productos')
+  return { success: true }
+}

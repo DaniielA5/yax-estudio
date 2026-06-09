@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import ProductoForm from "./productos-form";
 import ToggleActivoButton from "./toggle-activo-button";
-
+import ImagenUpload from './imagen-upload'
 
 export default async function ProductosPage() {
     const supabase = await createSupabaseServerClient()
@@ -84,6 +84,7 @@ type Producto = {
   costo_mayoreo: number
   material: string | null
   activo: boolean
+  imagen_url: string | null
 }
 
 function ProductoCard({ producto }: { producto: Producto }) {
@@ -95,7 +96,13 @@ function ProductoCard({ producto }: { producto: Producto }) {
           : 'border-gray-900 opacity-60 hover:opacity-100'
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start gap-4">
+        {/* Imagen */}
+        <div className="flex-shrink-0">
+          <ImagenUpload productoId={producto.id} imagenUrl={producto.imagen_url} />
+        </div>
+
+        {/* Info principal */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-lg truncate">{producto.nombre}</h3>
@@ -124,6 +131,7 @@ function ProductoCard({ producto }: { producto: Producto }) {
           </div>
         </div>
 
+        {/* Acciones */}
         <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
           <ProductoForm
             producto={producto}
