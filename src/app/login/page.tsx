@@ -31,7 +31,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/clientes')
+    router.push('/dashboard')
   }
 
   return (

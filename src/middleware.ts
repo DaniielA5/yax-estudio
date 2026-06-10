@@ -41,6 +41,7 @@ export async function middleware(request: NextRequest) {
 
   const isAuthPage = path.startsWith('/login')
   const isProtectedPage =
+    path.startsWith('/dashboard') ||
     path.startsWith('/clientes') ||
     path.startsWith('/productos') ||
     path.startsWith('/tecnicas') ||
@@ -51,7 +52,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isAuthPage) {
-    return NextResponse.redirect(new URL('/clientes', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return response
