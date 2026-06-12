@@ -59,24 +59,49 @@ export async function crearCotizacion(input: CrearCotizacionInput) {
     }
 }
 
-export async function cambiarEstadoCotizacion(
-  cotizacionId: number,
+type CambioEstadoInput = {
+  cotizacionId: number
   nuevoEstado: string
-) {
+  anticipo?: number
+  fechaEntregaPrometida?: string
+}
+
+export async function cambiarEstadoCotizacion(input: CambioEstadoInput) {
   const supabase = await createSupabaseServerClient()
 
   const estadosValidos = ['cotizado', 'aprobado', 'en_produccion', 'entregado', 'cancelado']
-  if (!estadosValidos.includes(nuevoEstado)) {
+  if (!estadosValidos.includes(input.nuevoEstado)) {
     return { error: 'Estado inválido' }
+  }
+
+  const updates: Record<string, any> = { estado: input.nuevoEstado }
+
+  if (input.nuevoEstado === 'aprobado') {
+    updates.fecha_aprobado = new Date().toISOString()
+    if (typeof input.anticipo === 'number' && input.anticipo >= 0) {
+      updates.anticipo = input.anticipo
+    }
+  }
+
+  if (input.nuevoEstado === 'en_produccion') {
+    updates.fecha_produccion = new Date().toISOString()
+    if (input.fechaEntregaPrometida) {
+      updates.fecha_entrega_prometida = input.fechaEntregaPrometida
+    }
+  }
+
+  if (input.nuevoEstado === 'entregado') {
+    updates.fecha_entregado = new Date().toISOString()
   }
 
   const { error } = await supabase
     .from('cotizaciones')
-    .update({ estado: nuevoEstado })
-    .eq('id', cotizacionId)
+    .update(updates)
+    .eq('id', input.cotizacionId)
 
   if (error) return { error: error.message }
 
   revalidatePath('/cotizaciones')
+  revalidatePath('/dashboard')
   return { success: true }
 }
