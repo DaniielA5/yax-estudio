@@ -28,27 +28,8 @@ export default async function ProductosPage() {
   const activos = productos.filter((p) => p.activo).length
   const inactivos = productos.length - activos
 
-  return (
-    <main className="min-h-screen bg-gray-950 text-white">
-      <div className="max-w-4xl mx-auto p-6 md:p-8">
-        <header className="flex justify-between items-center mb-8 pb-6 border-b border-gray-800">
-  <div>
-    <h1 className="text-3xl font-bold">Productos</h1>
-    <p className="text-gray-400 text-sm mt-1">
-      {activos} activos · {inactivos} inactivos
-    </p>
-  </div>
-  <div className="flex items-center gap-4">
-    <nav className="flex gap-1 text-sm">
-      <a href="/clientes" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Clientes</a>
-      <a href="/productos" className="px-3 py-1.5 bg-gray-800 text-white rounded-lg">Productos</a>
-      <a href="/tecnicas" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Técnicas</a>
-      <a href="/cotizaciones" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Cotizaciones</a>
-      <a href="/dashboard" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Dashboard</a>
-    </nav>
-    <ProductoForm />
-  </div>
-</header>
+return (
+  <>
 
         {productos.length === 0 ? (
           <EstadoVacio />
@@ -59,9 +40,8 @@ export default async function ProductosPage() {
             ))}
           </ul>
         )}
-      </div>
-    </main>
-  )
+      </>
+)
 }
 
 function EstadoVacio() {

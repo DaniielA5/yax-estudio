@@ -1,6 +1,4 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import LogoutButton from "../clientes/logout-button";
-
 
 type Estadisticas = {
     pendientes_cotizado: number
@@ -8,11 +6,11 @@ type Estadisticas = {
     aprobadas_sin_producir: number
     en_produccion_count: number
     en_produccion_piezas: number
-    total_pendiente_cobrar : number
-    entregado_30_dias:number 
+    total_pendiente_cobrar: number
+    entregado_30_dias: number
 }
 
-export default async function DashboardPage(){
+export default async function DashboardPage() {
     const supabase = await createSupabaseServerClient()
 
     const [statsRes, urgentesRes] = await Promise.all([
@@ -21,95 +19,78 @@ export default async function DashboardPage(){
             .from('cotizaciones')
             .select('id, slug, total, created_at, estado, clientes (nombre, empresa)')
             .eq('estado', 'cotizado')
-            .order('created_at' , { ascending: true })
+            .order('created_at', { ascending: true })
             .limit(5),
     ])
 
-if (statsRes.error) {
+    if (statsRes.error) {
+        return (
+            <div className="p-4 bg-red-950 border border-red-800 rounded-lg">
+                <p className="text-red-300">Error: {statsRes.error.message}</p>
+            </div>
+        )
+    }
+
+    const stats = statsRes.data as Estadisticas
+    const urgentes = urgentesRes.data || []
+
     return (
-      <main className="min-h-screen bg-gray-950 p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="p-4 bg-red-950 border border-red-800 rounded-lg">
-            <p className="text-red-300">Error: {statsRes.error.message}</p>
-          </div>
-        </div>
-      </main>
-    )
-  }
+        <>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold">Dashboard</h1>
+                <p className="text-gray-400 text-sm mt-1">Estado de YAX Studio</p>
+            </div>
 
-  const stats = statsRes.data as Estadisticas
-  const urgentes = urgentesRes.data || []
+            {/* Fila 1 — Acción inmediata */}
+            <section className="mb-6">
+                <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                    Acción inmediata
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Tarjeta
+                        titulo="Pendientes de respuesta"
+                        valor={stats.pendientes_cotizado}
+                        detalle={
+                            stats.pendientes_urgentes > 0
+                                ? `${stats.pendientes_urgentes} con más de 5 días`
+                                : 'Sin urgentes'
+                        }
+                        alerta={stats.pendientes_urgentes > 0}
+                        href="/cotizaciones"
+                    />
+                    <Tarjeta
+                        titulo="Por empezar a producir"
+                        valor={stats.aprobadas_sin_producir}
+                        detalle="Aprobadas, listas para arrancar"
+                        href="/cotizaciones"
+                    />
+                    <Tarjeta
+                        titulo="En producción"
+                        valor={stats.en_produccion_count}
+                        detalle={`${stats.en_produccion_piezas} piezas totales`}
+                        href="/cotizaciones"
+                    />
+                </div>
+            </section>
 
-  return (
-    <main className="min-h-screen bg-gray-950 text-white">
-      <div className="max-w-6xl mx-auto p-6 md:p-8">
-        <header className="flex justify-between items-center mb-8 pb-6 border-b border-gray-800">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-gray-400 text-sm mt-1">Estado de YAX Studio</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-1 text-sm">
-              <a href="/dashboard" className="px-3 py-1.5 bg-gray-800 text-white rounded-lg">Dashboard</a>
-              <a href="/clientes" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Clientes</a>
-              <a href="/productos" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Productos</a>
-              <a href="/tecnicas" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Técnicas</a>
-              <a href="/cotizaciones" className="px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors">Cotizaciones</a>
-            </nav>
-            <LogoutButton />
-          </div>
-        </header>
-
-        {/* Fila 1 — Acción inmediata */}
-        <section className="mb-6">
-          <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-            Acción inmediata
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Tarjeta
-              titulo="Pendientes de respuesta"
-              valor={stats.pendientes_cotizado}
-              detalle={
-                stats.pendientes_urgentes > 0
-                  ? `${stats.pendientes_urgentes} con más de 5 días`
-                  : 'Sin urgentes'
-              }
-              alerta={stats.pendientes_urgentes > 0}
-              href="/cotizaciones"
-            />
-            <Tarjeta
-              titulo="Por empezar a producir"
-              valor={stats.aprobadas_sin_producir}
-              detalle="Aprobadas, listas para arrancar"
-              href="/cotizaciones"
-            />
-            <Tarjeta
-              titulo="En producción"
-              valor={stats.en_produccion_count}
-              detalle={`${stats.en_produccion_piezas} piezas totales`}
-              href="/cotizaciones"
-            />
-          </div>
-        </section>
-
-        {/* Fila 2 — Vista de negocio */}
-        <section className="mb-10">
-          <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-            Vista de negocio
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TarjetaDinero
-              titulo="Pendiente de cobrar"
-              valor={stats.total_pendiente_cobrar}
-              detalle="Aprobadas + en producción"
-            />
-            <TarjetaDinero
-              titulo="Entregado últimos 30 días"
-              valor={stats.entregado_30_dias}
-              detalle="Histórico reciente"
-            />
-          </div>
-        </section>
+            {/* Fila 2 — Vista de negocio */}
+            <section className="mb-10">
+                <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                    Vista de negocio
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <TarjetaDinero
+                        titulo="Pendiente de cobrar"
+                        valor={stats.total_pendiente_cobrar}
+                        detalle="Aprobadas + en producción"
+                    />
+                    <TarjetaDinero
+                        titulo="Entregado últimos 30 días"
+                        valor={stats.entregado_30_dias}
+                        detalle="Histórico reciente"
+                    />
+                </div>
+            </section>
 
         {/* Cotizaciones urgentes */}
         {urgentes.length > 0 && (
@@ -178,8 +159,7 @@ if (statsRes.error) {
             </ul>
           </section>
         )}
-      </div>
-    </main>
+        </>
   )
 }
 
