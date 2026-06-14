@@ -27,9 +27,19 @@ export default async function ProductosPage() {
 
   const activos = productos.filter((p) => p.activo).length
   const inactivos = productos.length - activos
-
+  
 return (
   <>
+  <div className="flex justify-between items-center mb-8">
+  <div>
+    <h1 className="text-3xl font-bold">Productos</h1>
+    <p className="text-gray-400 text-sm mt-1">
+      {activos} {activos === 1 ? 'activo' : 'activos'}
+      {inactivos > 0 && ` · ${inactivos} ${inactivos === 1 ? 'inactivo' : 'inactivos'}`}
+    </p>
+  </div>
+  <ProductoForm />
+</div>
 
         {productos.length === 0 ? (
           <EstadoVacio />

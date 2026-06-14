@@ -1,6 +1,4 @@
-import { crearCliente } from "@/app/clientes/actions";
 import { createClient } from "@supabase/supabase-js";
-import { create } from "domain";
 
 export function createSupabasePublicClient() {
     return createClient(

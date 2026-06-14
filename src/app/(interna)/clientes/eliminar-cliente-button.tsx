@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useState } from "react"
+import { useState } from "react"
 import { eliminarCliente } from "./actions"
 
 type Props = {

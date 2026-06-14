@@ -1,8 +1,6 @@
 'use server'
 
 import { createSupabaseServerClient } from "@/lib/supabase-server"
-import { error } from "console"
-import { access } from "fs"
 import { revalidatePath } from "next/cache"
 
 function parsearNumero(valor: FormDataEntryValue | null): number | null {
@@ -19,7 +17,7 @@ export async function crearProducto(formData:FormData) {
     const costo_mayoreo = parsearNumero(formData.get('costo_mayoreo'))
     const material = (formData.get('material') as string)?.trim() || null
 
-    if (!nombre) return { errror: 'El nombre es obligatorio'}
+    if (!nombre) return { error: 'El nombre es obligatorio'}
     if(costo_individual === null || costo_individual <=0 )
         return { error: 'El costo individual debe ser un numero mayor a 0'}
     if (costo_mayoreo === null || costo_mayoreo <= 0 )

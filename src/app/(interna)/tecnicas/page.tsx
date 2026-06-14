@@ -28,7 +28,16 @@ export default async function TecnicasPage() {
 
   return (
   <>
-
+    <div className="flex justify-between items-center mb-8">
+      <div>
+        <h1 className="text-3xl font-bold">Técnicas de impresión</h1>
+        <p className="text-gray-400 text-sm mt-1">
+          {activas} {activas === 1 ? 'activa' : 'activas'}
+          {inactivas > 0 && ` · ${inactivas} ${inactivas === 1 ? 'inactiva' : 'inactivas'}`}
+        </p>
+      </div>
+      <TecnicaForm />
+    </div>
         {tecnicas.length === 0 ? (
           <EstadoVacio />
         ) : (
