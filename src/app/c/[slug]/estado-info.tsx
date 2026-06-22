@@ -4,40 +4,36 @@ type Props = {
 
 const ESTADOS_INFO = {
   aprobado: {
-    color: 'bg-green-950 border-green-900',
-    titleColor: 'text-green-300',
-    textColor: 'text-green-400',
+    bg: 'var(--semantic-success-bg)',
+    border: 'var(--semantic-success)',
+    color: 'var(--semantic-success)',
     icono: '✓',
-    iconoBg: 'bg-green-900',
     titulo: 'Cotización aprobada',
     descripcion:
       'YAX Studio se pondrá en contacto contigo para coordinar pago y producción.',
   },
   en_produccion: {
-    color: 'bg-orange-950 border-orange-900',
-    titleColor: 'text-orange-300',
-    textColor: 'text-orange-400',
+    bg: 'var(--semantic-warning-bg)',
+    border: 'var(--semantic-warning)',
+    color: 'var(--semantic-warning)',
     icono: '⚙',
-    iconoBg: 'bg-orange-900',
     titulo: 'En producción',
     descripcion:
       'Tu pedido está siendo trabajado. Te avisaremos cuando esté listo.',
   },
   entregado: {
-    color: 'bg-blue-950 border-blue-900',
-    titleColor: 'text-blue-300',
-    textColor: 'text-blue-400',
+    bg: 'var(--semantic-progress-bg)',
+    border: 'var(--semantic-progress)',
+    color: 'var(--semantic-progress)',
     icono: '📦',
-    iconoBg: 'bg-blue-900',
     titulo: 'Pedido entregado',
     descripcion: '¡Gracias por confiar en YAX Studio!',
   },
   cancelado: {
-    color: 'bg-red-950 border-red-900',
-    titleColor: 'text-red-300',
-    textColor: 'text-red-400',
+    bg: 'var(--semantic-danger-bg)',
+    border: 'var(--semantic-danger)',
+    color: 'var(--semantic-danger)',
     icono: '✕',
-    iconoBg: 'bg-red-900',
     titulo: 'Cotización cancelada',
     descripcion:
       'Esta cotización fue cancelada. Si necesitas otra, contacta con YAX Studio.',
@@ -50,16 +46,28 @@ export default function EstadoInfo({ estado }: Props) {
   if (!info) return null
 
   return (
-    <div className={`${info.color} border rounded-xl p-6 text-center`}>
+    <div
+      className="rounded-xl p-6 text-center border"
+      style={{
+        backgroundColor: info.bg,
+        borderColor: info.border,
+      }}
+    >
       <div
-        className={`w-16 h-16 mx-auto mb-3 rounded-full ${info.iconoBg} flex items-center justify-center text-3xl`}
+        className="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center text-3xl"
+        style={{
+          backgroundColor: info.color,
+          color: '#ffffff',
+        }}
       >
         {info.icono}
       </div>
-      <h3 className={`text-lg font-semibold ${info.titleColor} mb-1`}>
+      <h3 className="text-h2 mb-1" style={{ color: info.color }}>
         {info.titulo}
       </h3>
-      <p className={`text-sm ${info.textColor}`}>{info.descripcion}</p>
+      <p className="text-body" style={{ color: info.color }}>
+        {info.descripcion}
+      </p>
     </div>
   )
 }
