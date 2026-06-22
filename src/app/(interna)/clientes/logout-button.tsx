@@ -20,8 +20,21 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg text-sm transition-colors"
-      >
+      className="px-4 py-2 rounded-lg text-body transition-colors border"
+      style={{
+        backgroundColor: 'transparent',
+        borderColor: 'var(--border-subtle)',
+        color: 'var(--text-secondary)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--bg-subtle)'
+        e.currentTarget.style.color = 'var(--text-primary)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'transparent'
+        e.currentTarget.style.color = 'var(--text-secondary)'
+      }}
+    >
       Cerrar sesión
     </button>
   )

@@ -8,13 +8,26 @@ export default function InternoLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)' }}>
       <div className="max-w-6xl mx-auto p-6 md:p-8">
-        <header className="flex justify-between items-center mb-8 pb-6 border-b border-gray-800">
+        <header
+          className="flex justify-between items-center mb-8 pb-6 border-b"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
           <div className="flex items-center gap-3">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-orange-500">YAX</span>
-              <span className="text-gray-500 text-sm hidden md:inline">Studio</span>
+              <span
+                className="text-xl font-bold"
+                style={{ color: 'var(--accent)' }}
+              >
+                YAX
+              </span>
+              <span
+                className="text-sm hidden md:inline"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Studio
+              </span>
             </Link>
           </div>
           <div className="flex items-center gap-4">

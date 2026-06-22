@@ -19,19 +19,19 @@ export default function NavLinks() {
             {LINKS.map((link) => {
                 const isActive = pathname.startsWith(link.href)
                 return (
-                    <Link
-                    key={link.href}
-                    href={link.href}
-                    className={
-                        isActive
-                        ? 'px-3 py-1.5 bg-gray-800 text-white rounded-lg'
-                        : 'px-3 py-1.5 text-gray-400 hover:text-white rounded-lg transition-colors'
-
-                    }
-                    >
-                        {link.label}
-                    </Link>
-                )
+          <Link
+            key={link.href}
+            href={link.href}
+            className="px-3 py-1.5 rounded-lg transition-colors"
+            style={{
+              backgroundColor: isActive ? 'var(--bg-subtle)' : 'transparent',
+              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+              fontWeight: isActive ? 600 : 500,
+            }}
+          >
+            {link.label}
+          </Link>
+        )
             })}
         </nav>
     )
