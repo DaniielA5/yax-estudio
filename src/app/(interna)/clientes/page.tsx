@@ -8,11 +8,8 @@ export default async function ClientesPage({
 }: {
   searchParams: Promise<{ q?: string }>
 }) {
-
-  
   const supabase = await createSupabaseServerClient()
   const { q } = await searchParams
-
 
   const { data: clientes, error } = await supabase
     .from('clientes')
@@ -20,18 +17,24 @@ export default async function ClientesPage({
     .order('created_at', { ascending: false })
 
   const clientesFiltered = clientes && q
-  ? clientes.filter((cliente) =>
-      cliente.nombre?.toLowerCase().includes(q.toLowerCase()) ||
-      cliente.empresa?.toLowerCase().includes(q.toLowerCase()) ||
-      cliente.telefono?.toLowerCase().includes(q.toLowerCase())
-    )
-  : clientes
-
+    ? clientes.filter((cliente) =>
+        cliente.nombre?.toLowerCase().includes(q.toLowerCase()) ||
+        cliente.empresa?.toLowerCase().includes(q.toLowerCase()) ||
+        cliente.telefono?.toLowerCase().includes(q.toLowerCase())
+      )
+    : clientes
 
   if (error) {
     return (
-      <div className="p-4 bg-red-950 border border-red-800 rounded-lg">
-        <p className="text-red-300">Error al cargar clientes: {error.message}</p>
+      <div
+        className="p-4 border rounded-lg"
+        style={{
+          backgroundColor: 'var(--semantic-danger-bg)',
+          borderColor: 'var(--semantic-danger)',
+          color: 'var(--semantic-danger)',
+        }}
+      >
+        <p>Error al cargar clientes: {error.message}</p>
       </div>
     )
   }
@@ -40,13 +43,15 @@ export default async function ClientesPage({
     <>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Clientes</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-display" style={{ color: 'var(--text-primary)' }}>
+            Clientes
+          </h1>
+          <p className="text-body mt-1" style={{ color: 'var(--text-secondary)' }}>
             {clientesFiltered?.length || 0}
             {' '}
             {clientesFiltered?.length === 1
-            ? 'cliente registrado' 
-            : 'clientes registrados'}
+              ? 'cliente registrado'
+              : 'clientes registrados'}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -70,12 +75,20 @@ export default async function ClientesPage({
 
 function EstadoVacio() {
   return (
-    <div className="text-center py-16 border-2 border-dashed border-gray-800 rounded-xl">
-      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-900 flex items-center justify-center text-3xl">
+    <div
+      className="text-center py-16 border-2 border-dashed rounded-xl"
+      style={{ borderColor: 'var(--border-strong)' }}
+    >
+      <div
+        className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-3xl"
+        style={{ backgroundColor: 'var(--bg-subtle)' }}
+      >
         👥
       </div>
-      <h2 className="text-xl font-semibold mb-2">Aún no tienes clientes</h2>
-      <p className="text-gray-400 text-sm mb-4">
+      <h2 className="text-h1 mb-2" style={{ color: 'var(--text-primary)' }}>
+        Aún no tienes clientes
+      </h2>
+      <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
         Agrega tu primer cliente para empezar a cotizar.
       </p>
     </div>
@@ -99,19 +112,37 @@ function ClienteCard({ cliente }: { cliente: Cliente }) {
     .toUpperCase()
 
   return (
-    <li className="group bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors">
+    <li
+      className="group rounded-xl p-5 border transition-colors"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        borderColor: 'var(--border-subtle)',
+      }}
+    >
       <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center font-bold text-sm">
+        <div
+          className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm"
+          style={{
+            backgroundColor: 'var(--bg-subtle)',
+            color: 'var(--accent)',
+          }}
+        >
           {iniciales}
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg truncate">{cliente.nombre}</h3>
+          <h3 className="text-h2 truncate" style={{ color: 'var(--text-primary)' }}>
+            {cliente.nombre}
+          </h3>
           {cliente.empresa && (
-            <p className="text-gray-400 text-sm truncate">{cliente.empresa}</p>
+            <p className="text-body truncate" style={{ color: 'var(--text-secondary)' }}>
+              {cliente.empresa}
+            </p>
           )}
           {cliente.telefono && (
-            <p className="text-gray-500 text-sm mt-1">{cliente.telefono}</p>
+            <p className="text-caption mt-1" style={{ color: 'var(--text-muted)' }}>
+              {cliente.telefono}
+            </p>
           )}
         </div>
 
@@ -119,7 +150,7 @@ function ClienteCard({ cliente }: { cliente: Cliente }) {
           <ClienteForm
             cliente={cliente}
             triggerLabel="Editar"
-            triggerClassName="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors"
+            triggerClassName="px-3 py-1.5 rounded-lg text-caption btn-secondary"
           />
           <EliminarClienteButton
             clienteId={cliente.id}

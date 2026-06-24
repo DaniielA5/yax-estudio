@@ -47,7 +47,8 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
         onClick={() => setIsOpen(true)}
         className={
           triggerClassName ||
-            'px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors font-medium'        }
+          'px-4 py-2 rounded-lg text-body font-medium btn-primary'
+        }
       >
         {triggerLabel || '+ Nuevo cliente'}
       </button>
@@ -55,50 +56,65 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 p-6 rounded-xl w-full max-w-md space-y-4">
-        <h2 className="text-xl font-bold text-white">
+    <div
+      className="fixed inset-0 flex items-center justify-center p-4 z-50"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+    >
+      <div
+        className="rounded-xl w-full max-w-md p-6 space-y-4 border"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        }}
+      >
+        <h2 className="text-h1" style={{ color: 'var(--text-primary)' }}>
           {isEditing ? 'Editar cliente' : 'Nuevo cliente'}
         </h2>
 
-        <form action={handleSubmit} className="space-y-4">
+        <form action={handleSubmit} className="space-y-3">
           <input
             name="nombre"
             type="text"
             placeholder="Nombre"
             defaultValue={cliente?.nombre || ''}
             required
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700"
+            className="w-full p-3 rounded-lg text-body input-base"
           />
           <input
             name="telefono"
             type="tel"
             placeholder="Teléfono"
             defaultValue={cliente?.telefono || ''}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700"
+            className="w-full p-3 rounded-lg text-body input-base"
           />
           <input
             name="empresa"
             type="text"
             placeholder="Empresa"
             defaultValue={cliente?.empresa || ''}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700"
+            className="w-full p-3 rounded-lg text-body input-base"
           />
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && (
+            <p className="text-body" style={{ color: 'var(--semantic-danger)' }}>
+              {error}
+            </p>
+          )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="flex-1 p-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+              className="flex-1 p-3 rounded-lg text-body btn-secondary"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-                className="flex-1 p-3 bg-orange-600 hover:bg-orange-500 text-white rounded-lg disabled:opacity-50 transition-colors font-medium"            >
+              className="flex-1 p-3 rounded-lg text-body font-medium disabled:opacity-50 btn-primary"
+            >
               {loading ? 'Guardando...' : 'Guardar'}
             </button>
           </div>

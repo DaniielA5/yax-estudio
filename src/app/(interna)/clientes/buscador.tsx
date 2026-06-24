@@ -28,7 +28,7 @@ export default function Buscador() {
       value={valor}
       onChange={(e) => setValor(e.target.value)}
       placeholder="Buscar por cliente o ID..."
-      className="px-3 py-2 rounded-lg bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-orange-500 transition-colors text-sm w-64"
-    />
+      className="px-3 py-2 rounded-lg text-body w-64 input-base"
+      />
   )
 }
