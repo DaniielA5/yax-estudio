@@ -115,3 +115,14 @@
   background-color: var(--bg-subtle);
   color: var(--text-primary);
 }
+
+.btn-destructive {
+  background-color: transparent;
+  border: 1px solid var(--semantic-danger);
+  color: var(--semantic-danger);
+  transition: all 0.15s ease;
+}
+
+.btn-destructive:hover {
+  background-color: var(--semantic-danger-bg);
+}

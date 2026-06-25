@@ -49,7 +49,7 @@ export default function TecnicaForm({ tecnica, triggerLabel, triggerClassName }:
         onClick={() => setIsOpen(true)}
         className={
           triggerClassName ||
-          'px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors font-medium'
+          'px-4 py-2 rounded-lg text-body font-medium btn-primary'
         }
       >
         {triggerLabel || '+ Nueva técnica'}
@@ -58,25 +58,35 @@ export default function TecnicaForm({ tecnica, triggerLabel, triggerClassName }:
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 p-6 rounded-xl w-full max-w-md space-y-4">
-        <h2 className="text-xl font-bold text-white">
+    <div
+      className="fixed inset-0 flex items-center justify-center p-4 z-50"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+    >
+      <div
+        className="rounded-xl w-full max-w-md p-6 space-y-4 border"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        }}
+      >
+        <h2 className="text-h1" style={{ color: 'var(--text-primary)' }}>
           {isEditing ? 'Editar técnica' : 'Nueva técnica'}
         </h2>
 
-        <form action={handleSubmit} className="space-y-4">
+        <form action={handleSubmit} className="space-y-3">
           <input
             name="nombre"
             type="text"
             placeholder="Nombre (ej: DTF estándar, Serigrafía)"
             defaultValue={tecnica?.nombre || ''}
             required
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+            className="w-full p-3 rounded-lg text-body input-base"
           />
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-gray-400 mb-1">
+              <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
                 Costo por pieza
               </label>
               <input
@@ -87,14 +97,14 @@ export default function TecnicaForm({ tecnica, triggerLabel, triggerClassName }:
                 placeholder="0.00"
                 defaultValue={tecnica?.costo_por_pieza ?? 0}
                 required
-                className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full p-3 rounded-lg text-body input-base"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-caption mt-1" style={{ color: 'var(--text-muted)' }}>
                 0 si está incluido en el producto
               </p>
             </div>
             <div>
-              <label className="block text-xs text-gray-400 mb-1">
+              <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
                 Mínimo de piezas
               </label>
               <input
@@ -105,7 +115,7 @@ export default function TecnicaForm({ tecnica, triggerLabel, triggerClassName }:
                 placeholder="1"
                 defaultValue={tecnica?.minimo_piezas ?? 1}
                 required
-                className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full p-3 rounded-lg text-body input-base"
               />
             </div>
           </div>
@@ -115,30 +125,38 @@ export default function TecnicaForm({ tecnica, triggerLabel, triggerClassName }:
             placeholder="Notas internas (opcional)"
             defaultValue={tecnica?.notas || ''}
             rows={3}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors resize-none"
+            className="w-full p-3 rounded-lg text-body resize-none input-base"
           />
 
           {error && (
-            <div className="p-3 bg-red-950 border border-red-900 rounded-lg">
-              <p className="text-red-300 text-sm">{error}</p>
+            <div
+              className="p-3 rounded-lg border"
+              style={{
+                backgroundColor: 'var(--semantic-danger-bg)',
+                borderColor: 'var(--semantic-danger)',
+              }}
+            >
+              <p className="text-body" style={{ color: 'var(--semantic-danger)' }}>
+                {error}
+              </p>
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false)
                 setError('')
               }}
-              className="flex-1 p-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              className="flex-1 p-3 rounded-lg text-body btn-secondary"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 p-3 bg-orange-600 hover:bg-orange-500 text-white rounded-lg disabled:opacity-50 transition-colors font-medium"
+              className="flex-1 p-3 rounded-lg text-body font-medium disabled:opacity-50 btn-primary"
             >
               {loading ? 'Guardando...' : 'Guardar'}
             </button>
