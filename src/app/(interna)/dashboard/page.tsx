@@ -45,7 +45,7 @@ export default async function DashboardPage() {
     <>
       <div className="mb-8">
         <h1 className="text-display" style={{ color: 'var(--text-primary)' }}>
-          Dashboard
+          Inicio
         </h1>
         <p className="text-body mt-1" style={{ color: 'var(--text-secondary)' }}>
           Estado de YAX Studio

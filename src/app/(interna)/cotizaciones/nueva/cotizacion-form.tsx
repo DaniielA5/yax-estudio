@@ -4,49 +4,47 @@ import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { crearCotizacion } from "../actions"
 
-
-
 type Cliente = {
-    id: number
-    nombre:string
-    empresa: string | null
+  id: number
+  nombre: string
+  empresa: string | null
 }
 
 type Producto = {
-    id:number
-    nombre: string
-    costo_individual: number
-    costo_mayoreo: number
-    material : string | null
+  id: number
+  nombre: string
+  costo_individual: number
+  costo_mayoreo: number
+  material: string | null
 }
 
 type Tecnica = {
-    id:number
-    nombre : string
-    costo_por_pieza: number
-    minimo_piezas: number
+  id: number
+  nombre: string
+  costo_por_pieza: number
+  minimo_piezas: number
 }
 
 type ItemCotizacion = {
-    producto_id: number | null
-    tecnica_id  : number | null
-    cantidad: number
-    talla: string
-    color: string
+  producto_id: number | null
+  tecnica_id: number | null
+  cantidad: number
+  talla: string
+  color: string
 }
 
 type Props = {
-    clientes: Cliente[]
-    productos: Producto[]
-    tecnicas: Tecnica[]
+  clientes: Cliente[]
+  productos: Producto[]
+  tecnicas: Tecnica[]
 }
 
-const ITEM_VACIO :ItemCotizacion = {
-    producto_id: null,
-    tecnica_id: null,
-    cantidad : 1,
-    talla: '',
-    color: '',
+const ITEM_VACIO: ItemCotizacion = {
+  producto_id: null,
+  tecnica_id: null,
+  cantidad: 1,
+  talla: '',
+  color: '',
 }
 
 const UMBRAL_MAYOREO = 6
@@ -59,66 +57,69 @@ export default function CotizacionForm({ clientes, productos, tecnicas }: Props)
   const [guardando, setGuardando] = useState(false)
   const [errorGuardar, setErrorGuardar] = useState('')
 
-    function agregarItem(){
-        setItems([...items, { ...ITEM_VACIO}])
-    }
+  function agregarItem() {
+    setItems([...items, { ...ITEM_VACIO }])
+  }
 
-    function eliminarItem(index: number){
-        if(items.length === 1) return
-        setItems(items.filter((_, i) => i !== index))
-    }
+  function eliminarItem(index: number) {
+    if (items.length === 1) return
+    setItems(items.filter((_, i) => i !== index))
+  }
 
+  function actualizarItem<K extends keyof ItemCotizacion>(
+    index: number,
+    campo: K,
+    valor: ItemCotizacion[K]
+  ) {
+    const nuevos = [...items]
+    nuevos[index] = { ...nuevos[index], [campo]: valor }
+    setItems(nuevos)
+  }
 
-    function actualizarItem<K extends keyof ItemCotizacion>(
-        index: number,
-        campo: K,
-        valor: ItemCotizacion[K]
+  const itemsConPrecio = useMemo(() => {
+    return items.map((item) => {
+      const producto = productos.find((p) => p.id === item.producto_id)
+      const tecnica = tecnicas.find((t) => t.id === item.tecnica_id)
 
-    ){
-        const nuevos = [...items]
-        nuevos[index] = { ...nuevos[index], [campo]: valor}
-        setItems(nuevos)
-    }
+      if (!producto) return { ...item, precio_unitario: 0, subtotal: 0, error: null }
 
-    const itemsConPrecio = useMemo(() => {
-        return items.map((item) => { 
-            const producto = productos.find((p) => p.id === item.producto_id)
-            const tecnica = tecnicas.find((t) => t.id === item.tecnica_id)
-        
-            if(!producto) return { ...item, precio_unitario: 0, subtotal: 0 , error:null}
+      const precioProducto =
+        item.cantidad >= UMBRAL_MAYOREO ? producto.costo_mayoreo : producto.costo_individual
 
-            const precioProducto = 
-                item.cantidad >= UMBRAL_MAYOREO ? producto.costo_mayoreo : producto.costo_individual
-            
-            const precioTecnica = tecnica?.costo_por_pieza ?? 0
-            const precio_unitario = precioProducto + precioTecnica
-            const subtotal = precio_unitario * item.cantidad 
+      const precioTecnica = tecnica?.costo_por_pieza ?? 0
+      const precio_unitario = precioProducto + precioTecnica
+      const subtotal = precio_unitario * item.cantidad
 
-            const error =
-                tecnica && item.cantidad < tecnica.minimo_piezas
-                ? `Mínimo ${tecnica.minimo_piezas} piezas para ${tecnica.nombre}`
-                : null
+      const error =
+        tecnica && item.cantidad < tecnica.minimo_piezas
+          ? `Mínimo ${tecnica.minimo_piezas} piezas para ${tecnica.nombre}`
+          : null
 
-            return { ...item, precio_unitario, subtotal, error }
-            })
-}, [items, productos,tecnicas])
+      return { ...item, precio_unitario, subtotal, error }
+    })
+  }, [items, productos, tecnicas])
 
-const total = itemsConPrecio.reduce((sum,item) => sum + item.subtotal, 0)
-const hayErrores = itemsConPrecio.some((item) => item.error !== null)
-const itemsIncompletos =items.some((item) => !item.producto_id || !item.tecnica_id)
-
+  const total = itemsConPrecio.reduce((sum, item) => sum + item.subtotal, 0)
+  const hayErrores = itemsConPrecio.some((item) => item.error !== null)
+  const itemsIncompletos = items.some((item) => !item.producto_id || !item.tecnica_id)
 
   return (
     <div className="space-y-6">
       {/* Selección de cliente */}
-      <section className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+      <section
+        className="rounded-xl p-5 border"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+        }}
+      >
+        <h2 className="text-label mb-3" style={{ color: 'var(--text-muted)' }}>
           Cliente
         </h2>
         <select
           value={clienteId || ''}
           onChange={(e) => setClienteId(e.target.value ? Number(e.target.value) : null)}
-          className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+          className="w-full p-3 rounded-lg text-body input-base"
         >
           <option value="">Selecciona un cliente</option>
           {clientes.map((c) => (
@@ -130,15 +131,21 @@ const itemsIncompletos =items.some((item) => !item.producto_id || !item.tecnica_
       </section>
 
       {/* Items */}
-      <section className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+      <section
+        className="rounded-xl p-5 border"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+        }}
+      >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+          <h2 className="text-label" style={{ color: 'var(--text-muted)' }}>
             Items ({items.length})
           </h2>
           <button
             type="button"
             onClick={agregarItem}
-            className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors"
+            className="px-3 py-1.5 rounded-lg text-caption btn-secondary"
           >
             + Agregar item
           </button>
@@ -161,8 +168,14 @@ const itemsIncompletos =items.some((item) => !item.producto_id || !item.tecnica_
       </section>
 
       {/* Notas */}
-      <section className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+      <section
+        className="rounded-xl p-5 border"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+        }}
+      >
+        <h2 className="text-label mb-3" style={{ color: 'var(--text-muted)' }}>
           Notas internas (opcional)
         </h2>
         <textarea
@@ -170,77 +183,93 @@ const itemsIncompletos =items.some((item) => !item.producto_id || !item.tecnica_
           onChange={(e) => setNotas(e.target.value)}
           rows={3}
           placeholder="Información adicional sobre esta cotización"
-          className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors resize-none"
+          className="w-full p-3 rounded-lg text-body resize-none input-base"
         />
       </section>
 
       {/* Total y acción */}
-      <section className="bg-gray-900 border border-gray-800 rounded-xl p-5 sticky bottom-4">
+      <section
+        className="rounded-xl p-5 border sticky bottom-4"
+        style={{
+          backgroundColor: 'var(--accent-subtle)',
+          borderColor: 'var(--accent)',
+        }}
+      >
         <div className="flex justify-between items-center mb-4">
-          <span className="text-gray-400">Total estimado</span>
-          <span className="text-3xl font-bold text-orange-400">
+          <span className="text-h2" style={{ color: 'var(--text-secondary)' }}>
+            Total estimado
+          </span>
+          <span className="text-3xl font-bold" style={{ color: 'var(--accent-hover)' }}>
             ${total.toFixed(2)}
           </span>
         </div>
 
         {!clienteId && (
-          <p className="text-sm text-gray-500 mb-3">Selecciona un cliente para continuar</p>
+          <p className="text-caption mb-3" style={{ color: 'var(--text-muted)' }}>
+            Selecciona un cliente para continuar
+          </p>
         )}
         {itemsIncompletos && (
-          <p className="text-sm text-gray-500 mb-3">Completa producto y técnica en todos los items</p>
+          <p className="text-caption mb-3" style={{ color: 'var(--text-muted)' }}>
+            Completa producto y técnica en todos los items
+          </p>
         )}
         {hayErrores && (
-          <p className="text-sm text-red-400 mb-3">Revisa los errores de mínimo de piezas</p>
+          <p className="text-caption mb-3" style={{ color: 'var(--semantic-danger)' }}>
+            Revisa los errores de mínimo de piezas
+          </p>
         )}
         {errorGuardar && (
-          <p className="text-sm text-red-400 mb-3">{errorGuardar}</p>
+          <p className="text-caption mb-3" style={{ color: 'var(--semantic-danger)' }}>
+            {errorGuardar}
+          </p>
         )}
 
         <button
           type="button"
-          disabled={!clienteId || itemsIncompletos || hayErrores}
-          className="w-full p-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          
+          disabled={!clienteId || itemsIncompletos || hayErrores || guardando}
+          className="w-full p-3 rounded-lg text-body font-semibold disabled:opacity-50 disabled:cursor-not-allowed btn-primary"
           onClick={async () => {
-  if (!clienteId) return
-  setGuardando(true)
-  setErrorGuardar('')
+            if (!clienteId) return
+            setGuardando(true)
+            setErrorGuardar('')
 
-  const itemsParaGuardar = itemsConPrecio.map((item) => ({
-    producto_id: item.producto_id,
-    tecnica_id: item.tecnica_id,
-    cantidad: item.cantidad,
-    talla: item.talla,
-    color: item.color,
-    precio_unitario: item.precio_unitario,
-    subtotal: item.subtotal,
-  }))
+            const itemsParaGuardar = itemsConPrecio.map((item) => ({
+              producto_id: item.producto_id,
+              tecnica_id: item.tecnica_id,
+              cantidad: item.cantidad,
+              talla: item.talla,
+              color: item.color,
+              precio_unitario: item.precio_unitario,
+              subtotal: item.subtotal,
+            }))
 
-  const result = await crearCotizacion({
-    cliente_id: clienteId,
-    items: itemsParaGuardar,
-    total,
-    notas,
-  })
+            const result = await crearCotizacion({
+              cliente_id: clienteId,
+              items: itemsParaGuardar,
+              total,
+              notas,
+            })
 
-  setGuardando(false)
+            setGuardando(false)
 
-  if (result.error) {
-    setErrorGuardar(result.error)
-    return
-  }
+            if (result.error) {
+              setErrorGuardar(result.error)
+              return
+            }
 
-  router.push('/cotizaciones')
-}}
+            router.push('/cotizaciones')
+          }}
         >
-          Guardar cotización
+          {guardando ? 'Guardando...' : 'Guardar cotización'}
         </button>
       </section>
     </div>
   )
 }
 
-// Componente fila de item
+// ===== Componente fila de item =====
+
 type ItemRowProps = {
   index: number
   item: ItemCotizacion & { precio_unitario: number; subtotal: number; error: string | null }
@@ -267,16 +296,23 @@ function ItemRow({
   const esMayoreo = item.cantidad >= UMBRAL_MAYOREO
 
   return (
-    <div className="bg-gray-950 border border-gray-800 rounded-lg p-4 space-y-3">
+    <div
+      className="rounded-lg p-4 space-y-3 border"
+      style={{
+        backgroundColor: 'var(--bg-subtle)',
+        borderColor: 'var(--border-subtle)',
+      }}
+    >
       <div className="flex justify-between items-center">
-        <span className="text-xs text-gray-500 uppercase tracking-wider">
+        <span className="text-label" style={{ color: 'var(--text-muted)' }}>
           Item #{index + 1}
         </span>
         {puedeEliminar && (
           <button
             type="button"
             onClick={onEliminar}
-            className="text-xs text-red-400 hover:text-red-300 transition-colors"
+            className="text-caption btn-ghost"
+            style={{ color: 'var(--semantic-danger)' }}
           >
             Eliminar
           </button>
@@ -285,13 +321,15 @@ function ItemRow({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Producto</label>
+          <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
+            Producto
+          </label>
           <select
             value={item.producto_id || ''}
             onChange={(e) =>
               onActualizar(index, 'producto_id', e.target.value ? Number(e.target.value) : null)
             }
-            className="w-full p-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+            className="w-full p-2.5 rounded-lg text-body input-base"
           >
             <option value="">Selecciona producto</option>
             {productos.map((p) => (
@@ -303,13 +341,15 @@ function ItemRow({
         </div>
 
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Técnica</label>
+          <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
+            Técnica
+          </label>
           <select
             value={item.tecnica_id || ''}
             onChange={(e) =>
               onActualizar(index, 'tecnica_id', e.target.value ? Number(e.target.value) : null)
             }
-            className="w-full p-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+            className="w-full p-2.5 rounded-lg text-body input-base"
           >
             <option value="">Selecciona técnica</option>
             {tecnicas.map((t) => (
@@ -323,58 +363,76 @@ function ItemRow({
 
       <div className="grid grid-cols-3 gap-3">
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Cantidad</label>
+          <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
+            Cantidad
+          </label>
           <input
             type="number"
             min="1"
             value={item.cantidad}
             onChange={(e) => onActualizar(index, 'cantidad', Math.max(1, Number(e.target.value)))}
-            className="w-full p-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+            className="w-full p-2.5 rounded-lg text-body input-base"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Talla</label>
+          <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
+            Talla
+          </label>
           <input
             type="text"
             value={item.talla}
             onChange={(e) => onActualizar(index, 'talla', e.target.value)}
             placeholder="M, L, XL..."
-            className="w-full p-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+            className="w-full p-2.5 rounded-lg text-body input-base"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Color</label>
+          <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
+            Color
+          </label>
           <input
             type="text"
             value={item.color}
             onChange={(e) => onActualizar(index, 'color', e.target.value)}
             placeholder="Blanco, negro..."
-            className="w-full p-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+            className="w-full p-2.5 rounded-lg text-body input-base"
           />
         </div>
       </div>
 
       {/* Resumen del item */}
       {item.producto_id && item.tecnica_id && (
-        <div className="pt-3 border-t border-gray-800 flex justify-between items-center text-sm">
+        <div
+          className="pt-3 flex justify-between items-center border-t"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
           <div className="flex items-center gap-3">
-            <span className="text-gray-500">
+            <span className="text-caption" style={{ color: 'var(--text-muted)' }}>
               ${item.precio_unitario.toFixed(2)} × {item.cantidad}
             </span>
             {esMayoreo && (
-              <span className="text-xs px-2 py-0.5 bg-orange-950 text-orange-300 rounded-full border border-orange-900">
+              <span
+                className="text-caption px-2 py-0.5 rounded-full border"
+                style={{
+                  backgroundColor: 'var(--accent-subtle)',
+                  color: 'var(--accent)',
+                  borderColor: 'var(--accent)',
+                }}
+              >
                 Precio mayoreo
               </span>
             )}
           </div>
-          <span className="font-semibold text-white">
+          <span className="text-body font-semibold" style={{ color: 'var(--text-primary)' }}>
             ${item.subtotal.toFixed(2)}
           </span>
         </div>
       )}
 
       {item.error && (
-        <p className="text-red-400 text-xs">{item.error}</p>
+        <p className="text-caption" style={{ color: 'var(--semantic-danger)' }}>
+          {item.error}
+        </p>
       )}
     </div>
   )

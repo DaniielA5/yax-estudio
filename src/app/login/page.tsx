@@ -35,48 +35,78 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
+    <main
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: 'var(--bg-base)' }}
+    >
       <div className="w-full max-w-sm">
+        {/* Logo + microcopy */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-orange-400">YAX Studio</h1>
-          <p className="text-gray-400 text-sm mt-2">Sistema interno</p>
+          <h1 className="text-4xl font-bold" style={{ color: 'var(--accent)' }}>
+            YAX Studio
+          </h1>
+          <p className="text-body mt-2" style={{ color: 'var(--text-secondary)' }}>
+            Sistema interno de cotizaciones
+          </p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl space-y-4">
+        {/* Card de login */}
+        <div
+          className="rounded-xl p-6 space-y-4 border"
+          style={{
+            backgroundColor: 'var(--bg-card)',
+            borderColor: 'var(--border-subtle)',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04)',
+          }}
+        >
           <div className="space-y-3">
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full p-3 rounded-lg text-body input-base"
             />
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full p-3 rounded-lg text-body input-base"
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-950 border border-red-900 rounded-lg">
-              <p className="text-red-300 text-sm">{error}</p>
+            <div
+              className="p-3 rounded-lg border"
+              style={{
+                backgroundColor: 'var(--semantic-danger-bg)',
+                borderColor: 'var(--semantic-danger)',
+              }}
+            >
+              <p className="text-caption" style={{ color: 'var(--semantic-danger)' }}>
+                {error}
+              </p>
             </div>
           )}
 
           <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full p-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg disabled:opacity-50 transition-colors"
-            >
+            className="w-full p-3 rounded-lg text-body font-semibold disabled:opacity-50 btn-primary"
+          >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </div>
+
+        {/* Nota de pie */}
+        <p
+          className="text-caption text-center mt-6"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          Acceso exclusivo — personal YAX Studio
+        </p>
       </div>
     </main>
   )
 }
-
-
