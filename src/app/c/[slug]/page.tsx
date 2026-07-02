@@ -2,6 +2,7 @@ import { createSupabasePublicClient } from "@/lib/supabase-public";
 import { notFound } from "next/navigation";
 import AceptarButton from "./aceptar-button";
 import EstadoInfo from "./estado-info";
+import PagarAnticipoButton from "./pagar-anticipo-button";
 
 const ESTADOS_LABEL = {
   cotizado: 'Cotización pendiente',
@@ -204,13 +205,29 @@ export default async function CotizacionPublicaPaga({
           </section>
 
           {/* Acción según estado */}
-          <section className="px-6 py-5">
-            {cotizacion.estado === 'cotizado' ? (
-              <AceptarButton slug={slug} estadoActual={cotizacion.estado} />
-            ) : (
-              <EstadoInfo estado={cotizacion.estado} />
-            )}
-          </section>
+<section className="px-6 py-5">
+  {cotizacion.estado === 'cotizado' ? (
+    Number(cotizacion.total) <= 5000 ? (
+      <PagarAnticipoButton
+        slug={slug}
+        montoAnticipo={Number(cotizacion.total) * 0.5}
+        resto={Number(cotizacion.total) * 0.5}
+      />
+    ) : (
+      <>
+        <AceptarButton slug={slug} estadoActual={cotizacion.estado} />
+        <p
+          className="text-caption text-center mt-3"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          Para cotizaciones mayores a $5,000, contacta con YAX Studio para coordinar el pago
+        </p>
+      </>
+    )
+  ) : (
+    <EstadoInfo estado={cotizacion.estado} />
+  )}
+</section>
 
           {/* Footer */}
           <footer
