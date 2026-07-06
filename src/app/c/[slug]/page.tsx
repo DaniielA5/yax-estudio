@@ -14,10 +14,13 @@ const ESTADOS_LABEL = {
 
 export default async function CotizacionPublicaPaga({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ pago?: string }>
 }) {
   const { slug } = await params
+  const { pago } = await searchParams
   const supabase = createSupabasePublicClient()
 
   const { data: cotizacion, error } = await supabase
@@ -52,8 +55,23 @@ export default async function CotizacionPublicaPaga({
     cotizacion.estado
 
   return (
+    
     <main className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+      
       <div className="max-w-2xl mx-auto p-4 md:p-8">
+      {pago === 'cancelado' && cotizacion.estado === 'cotizado' && (
+      <div
+        className="rounded-xl p-4 mb-4 border"
+        style={{
+          backgroundColor: 'var(--semantic-warning-bg)',
+          borderColor: 'var(--semantic-warning)',
+        }}
+      >
+        <p className="text-body" style={{ color: 'var(--semantic-warning)' }}>
+          <strong>Pago cancelado.</strong> Puedes intentar de nuevo cuando quieras.
+        </p>
+      </div>
+    )}      
         <div
           className="rounded-xl overflow-hidden border"
           style={{
@@ -225,7 +243,11 @@ export default async function CotizacionPublicaPaga({
       </>
     )
   ) : (
-    <EstadoInfo estado={cotizacion.estado} />
+    <EstadoInfo
+  estado={cotizacion.estado}
+  montoAnticipo={cotizacion.monto_anticipo ? Number(cotizacion.monto_anticipo) : undefined}
+  anticipoPagadoAt={cotizacion.anticipo_pagado_at}
+/>
   )}
 </section>
 

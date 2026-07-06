@@ -1,5 +1,7 @@
 type Props = {
   estado: string
+  montoAnticipo?: number
+  anticipoPagadoAt?: string | null
 }
 
 const ESTADOS_INFO = {
@@ -25,7 +27,7 @@ const ESTADOS_INFO = {
     bg: 'var(--semantic-progress-bg)',
     border: 'var(--semantic-progress)',
     color: 'var(--semantic-progress)',
-    icono: '📦',
+    icono: '',
     titulo: 'Pedido entregado',
     descripcion: '¡Gracias por confiar en YAX Studio!',
   },
@@ -40,10 +42,16 @@ const ESTADOS_INFO = {
   },
 } as const
 
-export default function EstadoInfo({ estado }: Props) {
+export default function EstadoInfo({ estado, montoAnticipo, anticipoPagadoAt }: Props) {
   const info = ESTADOS_INFO[estado as keyof typeof ESTADOS_INFO]
 
   if (!info) return null
+
+  const mostrarAnticipo =
+    estado === 'aprobado' &&
+    typeof montoAnticipo === 'number' &&
+    montoAnticipo > 0 &&
+    anticipoPagadoAt
 
   return (
     <div
@@ -68,6 +76,26 @@ export default function EstadoInfo({ estado }: Props) {
       <p className="text-body" style={{ color: info.color }}>
         {info.descripcion}
       </p>
+
+      {mostrarAnticipo && (
+        <div
+          className="mt-4 pt-4 border-t inline-block px-4"
+          style={{ borderColor: 'rgba(21, 128, 61, 0.25)' }}
+        >
+          <p
+            className="text-label mb-1"
+            style={{ color: info.color, opacity: 0.75 }}
+          >
+            Anticipo recibido
+          </p>
+          <p
+            className="text-h2 font-semibold"
+            style={{ color: info.color }}
+          >
+            ${montoAnticipo.toFixed(2)}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

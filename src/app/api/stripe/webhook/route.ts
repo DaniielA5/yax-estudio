@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
   console.log(`[Webhook] Evento recibido: ${event.type} (id: ${event.id})`)
 
- const supabase = await createSupabaseServerClient()
+ const supabase = createSupabaseAdminClient()
 
   const { data: eventoYaProcesado } = await supabase
     .from('stripe_eventos_procesados')
