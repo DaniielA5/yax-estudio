@@ -90,7 +90,7 @@ export default async function CotizacionesPage({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-display" style={{ color: 'var(--text-primary)' }}>
             Cotizaciones
@@ -99,7 +99,7 @@ export default async function CotizacionesPage({
             {cotizacionesFiltered?.length || 0} {(cotizacionesFiltered?.length === 1) ? 'cotización' : 'cotizaciones'}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <Buscador />
           <a
             href="/cotizaciones/nueva"
@@ -215,7 +215,7 @@ function EstadoVacio() {
         className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-3xl"
         style={{ backgroundColor: 'var(--bg-subtle)' }}
       >
-        📋
+        
       </div>
       
       <h2 className="text-h1 mb-2" style={{ color: 'var(--text-primary)' }}>

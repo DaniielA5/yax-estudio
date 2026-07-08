@@ -144,7 +144,7 @@ function TecnicaCard({ tecnica }: { tecnica: Tecnica }) {
           )}
         </div>
 
-        <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <TecnicaForm
             tecnica={tecnica}
             triggerLabel="Editar"

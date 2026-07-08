@@ -41,24 +41,21 @@ export default async function ClientesPage({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-display" style={{ color: 'var(--text-primary)' }}>
-            Clientes
-          </h1>
-          <p className="text-body mt-1" style={{ color: 'var(--text-secondary)' }}>
-            {clientesFiltered?.length || 0}
-            {' '}
-            {clientesFiltered?.length === 1
-              ? 'cliente registrado'
-              : 'clientes registrados'}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Buscador />
-          <ClienteForm />
-        </div>
-      </div>
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+  <div>
+    <h1 className="text-display" style={{ color: 'var(--text-primary)' }}>
+      Clientes
+    </h1>
+    <p className="text-body mt-1" style={{ color: 'var(--text-secondary)' }}>
+      {clientesFiltered?.length || 0}{' '}
+      {clientesFiltered?.length === 1 ? 'cliente registrado' : 'clientes registrados'}
+    </p>
+  </div>
+  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    <Buscador />
+    <ClienteForm />
+  </div>
+</div>
 
       {clientesFiltered?.length === 0 ? (
         <EstadoVacio />
@@ -83,7 +80,7 @@ function EstadoVacio() {
         className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-3xl"
         style={{ backgroundColor: 'var(--bg-subtle)' }}
       >
-        👥
+        
       </div>
       <h2 className="text-h1 mb-2" style={{ color: 'var(--text-primary)' }}>
         Aún no tienes clientes
@@ -146,7 +143,7 @@ function ClienteCard({ cliente }: { cliente: Cliente }) {
           )}
         </div>
 
-        <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-2 flex-shrink-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <ClienteForm
             cliente={cliente}
             triggerLabel="Editar"

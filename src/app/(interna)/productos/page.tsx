@@ -150,7 +150,7 @@ function ProductoCard({ producto }: { producto: Producto }) {
         </div>
 
         {/* Acciones */}
-        <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <ProductoForm
             producto={producto}
             triggerLabel="Editar"
