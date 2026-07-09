@@ -47,15 +47,22 @@ export default function CompartirButton({ slug, clienteNombre, total }: Props) {
   }
 
   return (
-    <>
-      <button
-        onClick={() => setIsOpen(false)}
-        className="text-caption btn-ghost mb-2 block"
-        style={{ color: 'var(--text-muted)' }}
+  <div className="relative inline-block">
+    <button
+      onClick={() => setIsOpen(!isOpen)}
+      className="text-caption btn-ghost"
+    >
+      {isOpen ? 'Cerrar ✕' : 'Compartir →'}
+    </button>
+
+    {isOpen && (
+      <div
+        className="absolute right-0 top-full mt-2 z-20 rounded-lg border shadow-lg p-2 space-y-2 min-w-[200px]"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-subtle)',
+        }}
       >
-        ✕ Cerrar
-      </button>
-      <div className="space-y-2 min-w-[200px]">
         <button
           onClick={copiarLink}
           className="w-full text-caption px-3 py-2 rounded-lg transition-colors text-left"
@@ -65,15 +72,16 @@ export default function CompartirButton({ slug, clienteNombre, total }: Props) {
             border: copiado ? '1px solid var(--semantic-success)' : '1px solid transparent',
           }}
         >
-          {copiado ? '✓ Link copiado' : ' Copiar link'}
+          {copiado ? '✓ Link copiado' : 'Copiar link'}
         </button>
         <button
           onClick={abrirWhatsApp}
           className="w-full text-caption px-3 py-2 rounded-lg text-left btn-secondary"
         >
-          💬 Abrir en WhatsApp
+          Abrir en WhatsApp
         </button>
       </div>
-    </>
-  )
+    )}
+  </div>
+)
 }

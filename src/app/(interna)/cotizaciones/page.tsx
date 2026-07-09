@@ -103,10 +103,10 @@ export default async function CotizacionesPage({
           <Buscador />
           <a
             href="/cotizaciones/nueva"
-  className="px-4 py-2 rounded-lg text-body font-medium btn-primary"
->
-  + Nueva cotización
-</a>
+        className="px-4 py-2 rounded-lg text-body font-medium btn-primary"
+      >
+        + Nueva cotización
+      </a>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ export default async function CotizacionesPage({
             return (
               <li
                 key={cot.id}
-                className="rounded-xl p-5 border transition-colors"
+                className="relative rounded-xl p-5 border transition-colors"
                 style={{
                   backgroundColor: 'var(--bg-card)',
                   borderColor: 'var(--border-subtle)',
