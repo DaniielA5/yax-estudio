@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { crearCliente, actualizarCliente } from './actions'
+import Modal from '@/components/modal'
 
 type Cliente = {
   id: number
@@ -16,7 +17,11 @@ type Props = {
   triggerClassName?: string
 }
 
-export default function ClienteForm({ cliente, triggerLabel, triggerClassName }: Props) {
+export default function ClienteForm({
+  cliente,
+  triggerLabel,
+  triggerClassName,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -41,8 +46,8 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
     setLoading(false)
   }
 
-  if (!isOpen) {
-    return (
+  return (
+    <>
       <button
         onClick={() => setIsOpen(true)}
         className={
@@ -52,26 +57,15 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
       >
         {triggerLabel || '+ Nuevo cliente'}
       </button>
-    )
-  }
 
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center p-4 z-50"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-    >
-      <div
-        className="rounded-xl w-full max-w-md p-6 space-y-4 border"
-        style={{
-          backgroundColor: 'var(--bg-card)',
-          borderColor: 'var(--border-subtle)',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false)
+          setError('')
         }}
+        title={isEditing ? 'Editar cliente' : 'Nuevo cliente'}
       >
-        <h2 className="text-h1" style={{ color: 'var(--text-primary)' }}>
-          {isEditing ? 'Editar cliente' : 'Nuevo cliente'}
-        </h2>
-
         <form action={handleSubmit} className="space-y-3">
           <input
             name="nombre"
@@ -81,6 +75,7 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
             required
             className="w-full p-3 rounded-lg text-body input-base"
           />
+
           <input
             name="telefono"
             type="tel"
@@ -88,6 +83,7 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
             defaultValue={cliente?.telefono || ''}
             className="w-full p-3 rounded-lg text-body input-base"
           />
+
           <input
             name="empresa"
             type="text"
@@ -97,7 +93,10 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
           />
 
           {error && (
-            <p className="text-body" style={{ color: 'var(--semantic-danger)' }}>
+            <p
+              className="text-body"
+              style={{ color: 'var(--semantic-danger)' }}
+            >
               {error}
             </p>
           )}
@@ -105,11 +104,15 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
           <div className="flex gap-2 pt-2">
             <button
               type="button"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false)
+                setError('')
+              }}
               className="flex-1 p-3 rounded-lg text-body btn-secondary"
             >
               Cancelar
             </button>
+
             <button
               type="submit"
               disabled={loading}
@@ -119,7 +122,7 @@ export default function ClienteForm({ cliente, triggerLabel, triggerClassName }:
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </Modal>
+    </>
   )
 }

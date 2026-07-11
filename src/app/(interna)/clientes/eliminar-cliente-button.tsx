@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { eliminarCliente } from "./actions"
+import Modal from "@/components/modal"
 
 type Props = {
   clienteId: number
@@ -28,33 +29,21 @@ export default function EliminarClienteButton({ clienteId, clienteNombre }: Prop
     setLoading(false)
   }
 
-  if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="px-3 py-1.5 rounded-lg text-caption btn-destructive"
-      >
-        Eliminar
-      </button>
-    )
-  }
 
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center p-4 z-50"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+ return (
+  <>
+    <button
+      onClick={() => setIsOpen(true)}
+      className="px-3 py-1.5 rounded-lg text-caption btn-destructive"
     >
-      <div
-        className="rounded-xl w-full max-w-md p-6 space-y-4 border"
-        style={{
-          backgroundColor: 'var(--bg-card)',
-          borderColor: 'var(--border-subtle)',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        }}
+      Eliminar
+    </button>
+
+    <Modal
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      title="¿Eliminar cliente?"
       >
-        <h2 className="text-h1" style={{ color: 'var(--text-primary)' }}>
-          ¿Eliminar cliente?
-        </h2>
         <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
           Vas a eliminar a{' '}
           <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -102,7 +91,7 @@ export default function EliminarClienteButton({ clienteId, clienteNombre }: Prop
             {loading ? 'Eliminando...' : 'Sí, eliminar'}
           </button>
         </div>
-      </div>
-    </div>
-  )
+      </Modal>
+    </>
+)
 }
