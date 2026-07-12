@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { cambiarEstadoCotizacion } from './actions'
+import Modal from '@/components/modal'
 
 const ESTADOS_DISPONIBLES = [
   { value: 'cotizado', label: 'Cotizado' },
@@ -80,7 +81,11 @@ export default function CambiarEstadoButton({ cotizacionId, estadoActual }: Prop
   // Modal: Aprobar cotización (con anticipo opcional)
   if (transicionPendiente === 'aprobado') {
     return (
-      <Modal titulo="Aprobar cotización" onClose={cerrarModal}>
+      <Modal 
+        isOpen={true}
+        title ="Aprobar cotizacion" 
+        onClose = {cerrarModal}
+        > 
         <div className="space-y-3">
           <div>
             <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
@@ -134,7 +139,10 @@ export default function CambiarEstadoButton({ cotizacionId, estadoActual }: Prop
   // Modal: Pasar a producción (con fecha de entrega)
   if (transicionPendiente === 'en_produccion') {
     return (
-      <Modal titulo="Pasar a producción" onClose={cerrarModal}>
+      <Modal 
+      isOpen = {true}
+      title="Pasar a producción" 
+      onClose={cerrarModal}>
         <div className="space-y-3">
           <div>
             <label className="text-label block mb-1" style={{ color: 'var(--text-muted)' }}>
@@ -182,7 +190,10 @@ export default function CambiarEstadoButton({ cotizacionId, estadoActual }: Prop
   // Modal: Confirmar cancelación (NUEVO - destructivo)
   if (transicionPendiente === 'cancelado') {
     return (
-      <Modal titulo="¿Cancelar cotización?" onClose={cerrarModal}>
+      <Modal 
+      isOpen= {true}
+      title="¿Cancelar cotización?" 
+      onClose={cerrarModal}>
         <div className="space-y-3">
           <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
             La cotización pasará a estado{' '}
@@ -286,42 +297,3 @@ export default function CambiarEstadoButton({ cotizacionId, estadoActual }: Prop
   )
 }
 
-function Modal({
-  titulo,
-  children,
-  onClose,
-}: {
-  titulo: string
-  children: React.ReactNode
-  onClose: () => void
-}) {
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center p-4 z-50"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-    >
-      <div
-        className="rounded-xl w-full max-w-sm p-5 space-y-4 border"
-        style={{
-          backgroundColor: 'var(--bg-card)',
-          borderColor: 'var(--border-subtle)',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        }}
-      >
-        <div className="flex justify-between items-center">
-          <h3 className="text-h2" style={{ color: 'var(--text-primary)' }}>
-            {titulo}
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-body btn-ghost"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            ✕
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
-  )
-}
