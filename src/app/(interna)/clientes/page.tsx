@@ -1,7 +1,8 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import ClienteForm from './cliente-from'
 import EliminarClienteButton from './eliminar-cliente-button'
-import Buscador from './buscador'
+//import Buscador from './buscador'
+import Buscador from '@/components/buscador'
 
 export default async function ClientesPage({
   searchParams,
@@ -52,7 +53,7 @@ export default async function ClientesPage({
     </p>
   </div>
   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-    <Buscador />
+    <Buscador placeholder="Buscar por cliente o ID..." />
     <ClienteForm />
   </div>
 </div>

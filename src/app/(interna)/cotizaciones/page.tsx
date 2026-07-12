@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import CambiarEstadoButton from './cambiar-estado-button'
 import CompartirButton from './compartir-button'
-import Buscador from './buscador'
+import Buscador from '@/components/buscador'
 
 const ESTADOS = {
   cotizado: {
@@ -100,7 +100,7 @@ export default async function CotizacionesPage({
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Buscador />
+          <Buscador placeholder="Buscar por cliente o ID..." />
           <a
             href="/cotizaciones/nueva"
         className="px-4 py-2 rounded-lg text-body font-medium btn-primary"
