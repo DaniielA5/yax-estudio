@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
-import ClienteForm from './cliente-from'
+import ClienteForm from './cliente-form'
 import EliminarClienteButton from './eliminar-cliente-button'
 //import Buscador from './buscador'
 import Buscador from '@/components/buscador'
