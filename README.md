@@ -111,7 +111,6 @@ npm run dev
 
 ## Deuda técnica conocida
 
-- **Migración de `middleware` a `proxy` en Next.js 16**: la convención `middleware` está deprecada en Next.js 16, aunque sigue funcionando y genera un warning en cada build. Pospuse la migración porque no aporta valor inmediato al negocio.
 - **Instancias separadas para desarrollo y producción**: actualmente desarrollo y producción comparten la misma instancia de Supabase. Es una decisión aceptable para un proyecto personal, pero antes de escalar conviene aislar ambos entornos para reducir riesgos sobre los datos.
 - **Recuperación de errores en Stripe**: si Stripe crea una sesión de pago y Supabase falla al guardar el `session_id`, actualmente solo registro el error. Falta implementar un mecanismo de compensación o rollback para evitar estados inconsistentes.
 - **Dropdown de "Compartir"**: es posible abrir varios menús de compartir al mismo tiempo. El impacto es únicamente visual y de experiencia de usuario, por lo que decidí priorizar funcionalidades con mayor valor para el negocio.
