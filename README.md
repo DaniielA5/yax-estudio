@@ -73,6 +73,7 @@ El screenshot inferior muestra la vista mobile de cotizaciones, donde los compon
 - **Validación en cliente y servidor** en todos los formularios (*defense in depth*).
 - **Soft delete con `activo: boolean`** para preservar la integridad histórica de cotizaciones anteriores.
 - **Slug MD5 aleatorio de 10 caracteres** para las URLs públicas, evitando exponer IDs internos.
+- **`proxy.ts` en vez de `middleware.ts`** (Next.js 16) para verificación de sesión y protección de rutas autenticadas, respetando la nueva convención introducida en Next.js 16.
 
 ### Schema de base de datos
 
