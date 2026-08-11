@@ -75,6 +75,7 @@ El screenshot inferior muestra la vista mobile de cotizaciones, donde los compon
 - **Slug MD5 aleatorio de 10 caracteres** para las URLs públicas, evitando exponer IDs internos.
 - **`proxy.ts` en vez de `middleware.ts`** (Next.js 16) para verificación de sesión y protección de rutas autenticadas, respetando la nueva convención introducida en Next.js 16.
 
+
 ### Schema de base de datos
 
 ```text
@@ -114,7 +115,7 @@ npm run dev
 
 - **Instancias separadas para desarrollo y producción**: actualmente desarrollo y producción comparten la misma instancia de Supabase. Es una decisión aceptable para un proyecto personal, pero antes de escalar conviene aislar ambos entornos para reducir riesgos sobre los datos.
 - **Recuperación de errores en Stripe**: si Stripe crea una sesión de pago y Supabase falla al guardar el `session_id`, actualmente solo registro el error. Falta implementar un mecanismo de compensación o rollback para evitar estados inconsistentes.
-- **Dropdown de "Compartir"**: es posible abrir varios menús de compartir al mismo tiempo. El impacto es únicamente visual y de experiencia de usuario, por lo que decidí priorizar funcionalidades con mayor valor para el negocio.
+- **Prevención de pausa automática de Supabase**: el proyecto en plan free se pausa por inactividad después de ~7 días. Falta configurar un cron job (Vercel Cron, GitHub Action, cron-job.org) que haga un query ligero cada 3-4 días para mantener el proyecto activo. Sin esto, cualquier prueba o demo con cliente puede toparse con un proyecto pausado.
 - **Vulnerabilidades transitivas de npm**: el proyecto reporta dos vulnerabilidades heredadas de dependencias de `Next.js` y `PostCSS`. La corrección automática mediante `npm audit fix --force` implica un downgrade mayor de Next.js, por lo que decidí esperar una actualización oficial del ecosistema en lugar de introducir un cambio potencialmente disruptivo.
 
 ---
