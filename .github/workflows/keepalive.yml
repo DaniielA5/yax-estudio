@@ -1,0 +1,16 @@
+name: Keepalive Supabase
+
+on:
+  schedule:
+    # Ejecuta cada 3 días a las 10:00 UTC (aprox 4 AM hora Oaxaca)
+    - cron: '0 10 */3 * *'
+  workflow_dispatch:  # Permite ejecutar manualmente desde GitHub UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call keepalive endpoint
+        run: |
+          curl -f -H "Authorization: Bearer ${{ secrets.KEEPALIVE_SECRET }}" \
+            https://yax-estudio.vercel.app/api/keepalive
